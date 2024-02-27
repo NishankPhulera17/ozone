@@ -34,7 +34,7 @@ import { useAddBulkPointOnProductMutation } from "../../apiServices/bulkScan/Bul
 import { setQrIdList } from "../../../redux/slices/qrCodeDataSlice";
 import  Celebrate  from "react-native-vector-icons/MaterialIcons";
 import Error from "react-native-vector-icons/MaterialIcons"
-import { useGetActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
+import {useGetMembershipMutation, useGetOzoneActiveMembershipMutation } from '../../apiServices/membership/AppMembershipApi';
 import ErrorModal from "../../components/modals/ErrorModal";
 import FastImage from "react-native-fast-image";
 
@@ -55,6 +55,7 @@ const CongratulateOnScan = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const qrData = useSelector((state) => state.qrData.qrData);
   // product data recieved from scanned product
+  const productMrp = useSelector((state)=> state.productData.productMrp)
   const productData = useSelector((state) => state.productData.productData);
   const pointSharingData = useSelector(
     (state) => state.pointSharing.pointSharing
@@ -84,6 +85,14 @@ const CongratulateOnScan = ({ navigation, route }) => {
   const rewardType = route.params.rewardType;
   console.log("rewardType", rewardType, workflowProgram, productData);
   const platform = Platform.OS === "ios" ? "1" : "2";
+
+  const [getMemberShipFunc,
+  {
+    data:getMembershipData,
+    error:getMembershipError,
+    isLoading:getMembershipIsLoading,
+    isError:getMembershipIsError
+  }] = useGetMembershipMutation()
 
   const [
     getCouponOnCategoryFunc,
@@ -152,12 +161,14 @@ const CongratulateOnScan = ({ navigation, route }) => {
       isError: createWheelHistoryIsError,
     },
   ] = useCreateWheelHistoryMutation();
+
   const [getActiveMembershipFunc, {
     data: getActiveMembershipData,
     error: getActiveMembershipError,
     isLoading: getActiveMembershipIsLoading,
     isError: getActiveMembershipIsError
-}] = useGetActiveMembershipMutation();
+}] = useGetOzoneActiveMembershipMutation();
+
   const [
     checkQrCodeAlreadyRedeemedFunc,
     {
@@ -180,13 +191,38 @@ const CongratulateOnScan = ({ navigation, route }) => {
   useEffect(()=>{
     getMembership()
   },[rewardType])
+
+  useEffect(() => {
+    if (getMembershipData) {
+        console.log("getMembershipData", JSON.stringify(getMembershipData))
+        const getActiveMembership = async () => {
+          const credentials = await Keychain.getGenericPassword();
+          if (credentials) {
+              console.log(
+                  'Credentials successfully loaded for user ' + credentials.username
+              );
+              const token = credentials.username
+              getActiveMembershipFunc(token)
+              
+          }
+        }
+        getActiveMembership()
+    }
+    else if (getMembershipError) {
+        console.log("getMembershipError", getMembershipError)
+    }
+}, [getMembershipData, getMembershipError])
+
   useEffect(() => {
     if (getActiveMembershipData) {
         console.log("getActiveMembershipData", JSON.stringify(getActiveMembershipData))
+        console.log("getMembershipData", JSON.stringify(getMembershipData))
+
         if(getActiveMembershipData.success)
         {
-          setMembershipPercent(getActiveMembershipData?.body?.points)
-          console.log("getActiveMembershipData.body.points",getActiveMembershipData?.body?.points)
+
+
+          setMembershipPercent(getActiveMembershipData?.body?.tier?.points)
         }
     }
     else if (getActiveMembershipError) {
@@ -203,7 +239,7 @@ const getMembership = async () => {
           'Credentials successfully loaded for user ' + credentials.username
       );
       const token = credentials.username
-      getActiveMembershipFunc(token)
+      getMemberShipFunc(token)
   }
 }
   const fetchRewardsAccToWorkflow = async () => {
@@ -287,16 +323,16 @@ const getMembership = async () => {
                 if(Number(pointSharingData["percentage_points_value"])===0)
               {
                  point =
-                productData["mrp"]
-                 memberShipBonus = (point * Number(getActiveMembershipData?.body?.points!==undefined ? getActiveMembershipData?.body?.points : 0))/100
+                 productMrp["mrp"]
+                 memberShipBonus = (point * Number(getActiveMembershipData?.body?.tier?.points!==undefined ? getActiveMembershipData?.body?.tier?.points : 0))/100
                 totalPoints = memberShipBonus
-                console.log("memberShipBonus recieved",getActiveMembershipData?.body?.points)
+                console.log("memberShipBonus recieved",getActiveMembershipData?.body?.tier?.points)
               }
               else{
                  point =
-                productData["mrp"] *
+                productMrp["mrp"] *
                 (pointSharingData["percentage_points_value"] / 100);
-                 memberShipBonus = (point * Number(getActiveMembershipData?.body?.points !==undefined ? getActiveMembershipData?.body?.points : 0))/100
+                 memberShipBonus = (point * Number(getActiveMembershipData?.body?.tier?.points !==undefined ? getActiveMembershipData?.body?.tier?.points : 0))/100
                  totalPoints = point + memberShipBonus
               }
               }
@@ -395,7 +431,7 @@ const getMembership = async () => {
 
   useEffect(() => {
     fetchRewardsAccToWorkflow();
-  }, [membershipPercent]);
+  }, [getActiveMembershipData]);
 
   useEffect(() => {
     if (addBulkPointOnProductData) {
@@ -565,7 +601,7 @@ const getMembership = async () => {
         if (pointSharingData.flat_points) {
           const points = productData[`${userData.user_type}_points`]
           
-          const memberShipBonus = (points * Number(getActiveMembershipData?.body?.points !==undefined ? getActiveMembershipData?.body?.points : 0))/100
+          const memberShipBonus = (points * Number(getActiveMembershipData?.body?.tier?.points !==undefined ? getActiveMembershipData?.body?.tier?.points : 0))/100
           
           const totalPoints = points + memberShipBonus
           setShowPoints(totalPoints);
@@ -616,22 +652,22 @@ const getMembership = async () => {
             if(Number(pointSharingData["percentage_points_value"])==0)
             {
                points =
-              productData["mrp"]
-               memberShipBonus = (points * Number(getActiveMembershipData?.body?.points !==undefined ? getActiveMembershipData?.body?.points : 0))/100
+              productMrp["mrp"]
+               memberShipBonus = (points * Number(getActiveMembershipData?.body?.tier?.points !==undefined ? getActiveMembershipData?.body?.tier?.points : 0))/100
               totalPoints = memberShipBonus
 
             }
             else{
               points =
-              productData["mrp"] *
+              productMrp["mrp"] *
               (pointSharingData["percentage_points_value"] / 100);
-               memberShipBonus = (points * Number(getActiveMembershipData?.body?.points !==undefined ? getActiveMembershipData?.body?.points : 0))/100
+               memberShipBonus = (points * Number(getActiveMembershipData?.body?.tier?.points !==undefined ? getActiveMembershipData?.body?.tier?.points : 0))/100
           
            totalPoints = points + memberShipBonus
             }
             
           setShowPoints(totalPoints);
-          console.log("Simple points Recieved",totalPoints,points,memberShipBonus)
+          console.log("Simple points Recieved",totalPoints,points,memberShipBonus,getActiveMembershipData?.body?.tier?.points)
            
             const body = {
               data: {
@@ -663,7 +699,7 @@ const getMembership = async () => {
               token: token,
             };
             console.log("userPointEntryFunc", body);
-            userPointEntryFunc(body);
+            getActiveMembershipData &&  userPointEntryFunc(body);
           };
           submitPoints();
         }
