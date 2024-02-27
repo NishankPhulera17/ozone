@@ -9,7 +9,7 @@ const TextInputRectangularWithPlaceholder = (props) => {
     const [error, setError] = useState(false);
     console.log("value", props)
     const placeHolder = props.placeHolder
-    const required = props.required
+    const required = props.jsonData.required
     const specialChar = props.specialCharValidation
     const title  = props.title
 
@@ -36,7 +36,7 @@ const TextInputRectangularWithPlaceholder = (props) => {
             const nameRegex = /^[a-zA-Z\s-]+$/;
             if (nameRegex.test(text)) {
                 setValue(text)
-                props.handleData(text, props.title)
+                props.handleData(text, props.title,props.jsonData)
                 setError(false)
             }
             else {
@@ -51,13 +51,13 @@ const TextInputRectangularWithPlaceholder = (props) => {
         }
         else {
             setValue(text)
-            props.handleData(text, props.title)
+            props.handleData(text, props.title,props.jsonData)
         }
 
     }
     const handleInputEnd = (text, placeHolder) => {
         //    console.log(text)
-        props.handleData(text, props.title)
+        props.handleData(text, props.title,props.jsonData)
     }
 
     return (

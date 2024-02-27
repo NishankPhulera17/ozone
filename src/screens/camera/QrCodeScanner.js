@@ -55,6 +55,7 @@ const QrCodeScanner = ({navigation}) => {
   const [isFirstScan, setIsFirstScan] = useState(false) 
   const [isReportable, setIsReportable] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [showProceed, setShowProceed] = useState(false)
   const userId = useSelector(state => state.appusersdata.userId);
   const userData = useSelector(state=>state.appusersdata.userData)
   const userType = useSelector(state => state.appusersdata.userType);
@@ -353,6 +354,9 @@ if(addQrData)
       setProductId(productDataData?.body?.product_id);
       
       checkWarrantyFunc({form_type, token, body})
+      setTimeout(() => {
+        setShowProceed(true)
+      }, 1000);
       }
       else{
        
@@ -1161,12 +1165,14 @@ const onSuccess = async (e) => {
             </View>
           )}
           {
-            productDataData && productDataData?.body?.products.length!==0 &&
-             <ButtonProceed
+           showProceed && <View style={{alignItems:'center',justifyContent:'center'}}>
+               <ButtonProceed
             handleOperation={handleAddQr}
             style={{color: 'white'}}
             content="Proceed"
             navigateTo={'QrCodeScanner'}></ButtonProceed>
+            </View>
+            
           }
           
 
