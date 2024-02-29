@@ -219,7 +219,8 @@ const VerifyOtp = ({ navigation, route }) => {
   const modalWithBorderClose = () => {
     setModalWithBorder(false);
     setMessage('')
-    navigation.navigate("Dashboard")
+    // navigation.navigate("Dashboard")
+    navigation.reset({ index: '0', routes: [{ name: 'Dashboard' }] })
   };
 
   const ModalContent = () => {

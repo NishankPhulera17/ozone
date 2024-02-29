@@ -216,10 +216,18 @@ const PreviousTransactionHistory = ({navigation}) => {
                 keyExtractor={(item,index) => index}
             />
             {
-                displayList==undefined && <DataNotFound></DataNotFound>
+                displayList==undefined &&
+                <View style={{height:50, position:'absolute', bottom:350}}>
+                 <DataNotFound></DataNotFound>
+
+                </View>
             }
             {
-                displayList && displayList.length===0 && <DataNotFound></DataNotFound>
+                displayList && displayList.length===0 && 
+                <View style={{height:100,width:'100%', position:'absolute', bottom:350}}>
+                <DataNotFound></DataNotFound>
+
+               </View>
             }
         </View>
     );

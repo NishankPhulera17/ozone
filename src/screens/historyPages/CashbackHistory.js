@@ -665,7 +665,7 @@ const CashbackHistory = ({ navigation }) => {
         keyExtractor={(item, index) => index}
       />}
       {
-        fetchCashbackEnteriesData?.body?.length === 0 && <View style={{ marginBottom: 300, width: '100%' }}>
+        fetchCashbackEnteriesData?.body?.count === 0 && <View style={{ marginBottom: 300, width: '100%', }}>
           <DataNotFound></DataNotFound>
         </View>
       }

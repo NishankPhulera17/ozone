@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { useGetAllRedeemedCouponsMutation } from '../../apiServices/workflow/rewards/GetCouponApi';
 import { useGetAllUserCouponsMutation } from '../../apiServices/coupons/getAllCouponsApi';
+import DataNotFound from '../data not found/DataNotFound';
 
 const CouponHistory = ({navigation}) => {
     const [getAllRedeemedFunc,{
@@ -140,6 +141,13 @@ else if(getAllCouponsError){
                 data={item}
                 key ={index} refNo={item.ref_no} couponCode={item.brand_product_code} redeemedOn={moment(item.updated_at).format("DD-MM-YYYY")} ></CouponItems> 
                 )}></FlatList>}
+
+                {getAllCouponsData==undefined &&
+                <View style={{height:100, position:'absolute', top: 350}}>
+                    <DataNotFound/>
+
+                </View>
+                }
                 
         </View>
     );

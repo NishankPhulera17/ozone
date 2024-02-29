@@ -163,6 +163,11 @@ const VideoGallery = ({ navigation }) => {
             
           }
 
+          {
+                 videoData == undefined && videoData.length == 0 &&
+                 <DataNotFound></DataNotFound> 
+          }
+
 
 
 

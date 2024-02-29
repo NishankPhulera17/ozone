@@ -159,9 +159,7 @@ const CustomDrawer = () => {
       } catch(e) {
         console.log("error deleting loginData",e)
       }
-    
-      console.log('Done.')
-    
+      console.log('Done')
   }
 
   const fetchTerms = async () => {

@@ -8,6 +8,7 @@ import { useGetActiveMembershipMutation } from '../../apiServices/membership/App
 import * as Keychain from 'react-native-keychain';
 import PlatinumModal from '../../components/platinum/PlatinumModal';
 import { useGetPointSharingDataMutation } from '../../apiServices/pointSharing/pointSharingApi';
+import PoppinsTextLeftMedium from '../../components/electrons/customFonts/PoppinsTextLeftMedium';
 
 
 const Passbook = ({ navigation }) => {
@@ -306,6 +307,12 @@ const Passbook = ({ navigation }) => {
                         <RewardBox ></RewardBox>
 
                     </View>}
+
+                    <View style={{ backgroundColor: 'white',paddingTop:'5%',marginLeft:'37%',marginTop:5, }}>
+              {userData  && <TouchableOpacity style={{ backgroundColor: ternaryThemeColor, padding: 10, borderRadius: 5, width: 120, alignItems: 'center',  }} onPress={() => { navigation.navigate("RedeemedHistory") }}>
+                <PoppinsTextLeftMedium style={{ color: 'white', fontWeight: '800' }} content="Redeem"  ></PoppinsTextLeftMedium>
+              </TouchableOpacity>}
+            </View>
                 </View>
 
 
@@ -424,7 +431,7 @@ const Passbook = ({ navigation }) => {
                             <GridVIew title="Warranty History" discription=" list of warranty redeemed by you" image={require('../../../assets/images/warranty_icon.png')}></GridVIew>
                             {/* } */}
                             {
-                                couponOptionEnabled &&
+                                // couponOptionEnabled &&
                                 <GridVIew title="Coupon History" discription=" list of coupons redeemed by you" image={require('../../../assets/images/scannedHistory.png')}></GridVIew>
                             }
                             {
