@@ -485,6 +485,7 @@ const onSuccess = async (e) => {
                 setError(true);
                 setMessage(response?.data.message);
               } else if (statusCode === 202) {
+                console.log("status code is:")
                 setIsReportable(true);
                 setError(true);
                 setMessage(response?.data.message);
@@ -639,7 +640,7 @@ const onSuccess = async (e) => {
  
   useEffect(() => {
     if (verifyQrData) {
-      console.log('Verify qr data', verifyQrData);
+      // console.log('Verify qr data', verifyQrData);
       setIsLoading(false)
       dispatch(setProductMrp(verifyQrData?.body?.qr))
       // const qrStatus = verifyQrData.body?.qr?.qr_status;
@@ -663,15 +664,15 @@ const onSuccess = async (e) => {
       //   }
       // }
     } else if (verifyQrError) {
-      setIsLoading(false)
-      if (verifyQrError === undefined) {
-        setError(true);
-        setMessage("This QR is not activated yet");
-      } else {
-        setError(true);
-        setMessage(verifyQrError.data?.message);
-      }
-      console.log('Verify qr error', verifyQrError?.data?.Error);
+      // setIsLoading(false)
+      // if (verifyQrError === undefined) {
+      //   setError(true);
+      //   setMessage("This QR is not activated yet");
+      // } else {
+      //   setError(true);
+      //   setMessage(verifyQrError.data?.message);
+      // }
+      // console.log('Verify qr error', verifyQrError?.data?.Error);
     }
   }, [verifyQrData, verifyQrError]);
   // --------------------------------------------------------
@@ -1088,14 +1089,14 @@ const onSuccess = async (e) => {
               isReportable = {isReportable}
               openModal={error}></ErrorModal>
           )}
-          {error  && (
+          {/* {error  && (
             <ErrorModal
               modalClose={modalClose}
               isReportable = {isReportable}
               message={message}
               
               openModal={error}></ErrorModal>
-          )}
+          )} */}
   {
     success && (
       <MessageModal
