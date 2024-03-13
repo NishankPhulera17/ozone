@@ -18,7 +18,9 @@ export const OtpLoginApi = baseApi.injectEndpoints({
                         "otp" : otp,
                         "user_type_id" : user_type_id,
                         "user_type" : user_type,
-                        "fcm_token":fcm_token
+                        "fcm_token":fcm_token,
+                        
+
                         
                     }
                     
